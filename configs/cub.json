@@ -1,0 +1,67 @@
+{
+	"dataset": "cub",
+	"data_dir": "data/cub",
+
+	"GAN":{
+		"name": "GAN",
+		"epochs": 926,
+		"batch_size": 64,
+		"val_freq": 20,
+		"save_freq": 5,
+		"cycle_lambda": 0.01,
+		"gp_lambda": 10,
+
+		"generator":{
+			"name": "generator",
+			"x_dim": 2048,
+			"a_dim": 1024,
+			"z_dim": 1024,
+			"hidden_dim": 4096,
+			"lr": 1e-4
+		},
+
+		"discriminator":{
+			"name": "discriminator",
+			"x_dim": 2048,
+			"a_dim": 1024,
+			"hidden_dim": 4096,
+			"lr": 1e-3
+		},
+
+		"regressor":{
+			"name": "regressor",
+			"x_dim": 2048,
+			"a_dim": 1024,
+			"epochs": 40,
+			"batch_size": 64,
+			"lr": 9.9978e-5,
+			"lr_decay": 8.75e-5,
+			"val_freq": 5,
+			"save_freq": 5
+		},
+
+		"classifier":{
+			"name": "GAN validation classifier",
+			"x_dim": 2048,
+			"y_dim": 200,
+			"epochs": 30,
+			"batch_size": 2048,
+			"lr": 0.05,
+			"val_freq": 5,
+			"save_freq": 5
+		}
+	},
+
+	"GZSL_classifier":{
+		"name": "GZSL classifier",
+		"x_dim": 2048,
+		"y_dim": 200,
+		"epochs": 80,
+		"batch_size": 4096,
+		"lr": 1e-4,
+		"lr_decay": 1e-3,
+		"wdecay": 1e-4,
+		"val_freq": 5,
+		"save_freq": 5
+	}
+}

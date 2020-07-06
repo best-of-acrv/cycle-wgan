@@ -1,0 +1,71 @@
+{
+	"dataset": "sun",
+	"data_dir": "data/sun",
+
+	"GAN":{
+		"name": "GAN",
+		"epochs": 985,
+		"batch_size": 64,
+		"val_freq": 20,
+		"save_freq": 5,
+		"cycle_lambda": 0.01,
+		"gp_lambda": 10,
+
+		"generator":{
+			"name": "generator",
+			"x_dim": 2048,
+			"a_dim": 102,
+			"z_dim": 102,
+			"hidden_dim": 4096,
+			"lr": 6.1508e-4,
+			"lr_decay": 1.8e-2
+		},
+
+		"discriminator":{
+			"name": "discriminator",
+			"x_dim": 2048,
+			"a_dim": 102,
+			"hidden_dim": 4096,
+			"lr": 8.6763e-3,
+			"lr_decay": 2.53e-3
+		},
+
+		"regressor":{
+			"name": "regressor",
+			"x_dim": 2048,
+			"a_dim": 102,
+			"epochs": 100,
+			"batch_size": 64,
+			"lr": 9.6469e-5,
+			"lr_decay": 1.38e-2,
+			"wdecay": 1e-3,
+			"val_freq": 5,
+			"save_freq": 5
+		},
+
+		"classifier":{
+			"name": "GAN validation classifier",
+			"x_dim": 2048,
+			"y_dim": 717,
+			"epochs": 15,
+			"batch_size": 2048,
+			"lr": 9.6154e-4,
+			"lr_decay": 4.45e-2,
+			"val_freq": 5,
+			"save_freq": 5
+		}
+	},
+
+	"GZSL_classifier":{
+		"name": "GZSL classifier",
+		"x_dim": 2048,
+		"y_dim": 717,
+		"epochs": 85,
+		"batch_size": 2048,
+		"lr": 1e-4,
+		"lr_decay": 12e-3,
+		"wdecay": 1e-4,
+		"val_freq": 5,
+		"save_freq": 5
+	}
+}
