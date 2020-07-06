@@ -37,8 +37,8 @@ $ sh Miniconda3-latest-Linux-x86_64.sh
 ### Clone repository
 Enter the following commands to clone this repository:
 ```bash
-$ git clone TODO
-$ cd TODO
+$ git clone https://github.com/Best-of-ACRV/cycle_consistent_GZSL.git
+$ cd cycle_consistent_GZSL/
 ```
 
 ### Virtual Environment
