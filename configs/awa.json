@@ -1,6 +1,6 @@
 {
 	"dataset": "awa",
-	"data_dir": "data/awa1",
+	"data_dir": "data/datasets/awa1",
 
 	"GAN":{
 		"name": "GAN",

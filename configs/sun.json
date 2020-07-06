@@ -1,6 +1,6 @@
 {
 	"dataset": "sun",
-	"data_dir": "data/sun",
+	"data_dir": "data/datasets/sun",
 
 	"GAN":{
 		"name": "GAN",

@@ -34,6 +34,13 @@ $ sh Miniconda3-latest-Linux-x86_64.sh
 
 *You may have to open a new terminal or re-source your ~/.bashrc to get access to the conda command.*
 
+If don't want conda's base environment to be activated on startup, set the auto_activate_base parameter to false: 
+
+```bash
+$ conda config --set auto_activate_base false
+```
+
+
 ### Clone repository
 Enter the following commands to clone this repository:
 ```bash
@@ -52,7 +59,7 @@ $ conda info --envs
 ```
 
 ## Datasets
-The four datasets analysed in the paper (CUB, FLO, SUN and AWA1) are available in h5 format. We provide a script to download and unzip to the expected directory (*data/*). To download and unpack the data, run the following from the cycle_consistent_GZSL root directory:
+The four datasets analysed in the paper (CUB, FLO, SUN and AWA1) are available in h5 format. We provide a script to download and unzip to the expected directory (*data/*). The download is ~1.3GB and the unzipped data will take up about ~3.1GB. To download and unpack the data, run the following from the cycle_consistent_GZSL root directory:
 ```bash
 $ bash data/download_datasets.sh
 ```
@@ -78,7 +85,7 @@ Training the cycle-consistent GZSL method consists of the following steps:
 2. Generating fake visual features from unseen (and optionally, seen) classes.
 3. Training a GZSL classifier on the fake visual features (or a combination of fake/real).
 
-Model classes (including training/validation/testing routines) are found in models.py - classes include Classifier (for validation classifier and GZSL classifier), Regressor, Generator, Discriminator and GAN (which has an instantiation of the other four classes as attributes). The model classes expect a dictionary of training/model options. We provide configuration .json files for each of the four datasets in the *configs/* directory. Full details on the model/training configuration options can be found by entering the following commands:
+Model classes (including training/validation/testing routines) are found in models.py - classes include Classifier (for the validation classifier and GZSL classifier), Regressor, Generator, Discriminator and GAN (which has an instantiation of the other four classes as attributes). The model classes expect a dictionary of training/model options. We provide configuration .json files for each of the four datasets in the *configs/* directory. Full details on the model/training configuration options can be found by entering the following commands:
 ```bash
 (pytorch_gzsl) $ python
 >>> import models
@@ -94,15 +101,15 @@ In general, experiments are run by calling the run.py file. To view the expected
 (pytorch_gzsl) $ python run.py --help
 ```
 
-The command below runs all training steps outlined above (with default settings), where CONFIG_JSON is a model/training configuration .json file and GPU_ID is the device ID to be used.
+The example command below runs all training steps outlined above (with default settings), where CONFIG_JSON is a model/training configuration .json file and GPU_ID is the device ID to be used.
 ```bash
 (pytorch_gzsl) $ python run.py --config CONFIG_JSON --gpu GPU_ID --train-gan --gen-fake --train-cls
 ```
 
 ### Pre-defined Experiments
-We provide bash scripts to run experiments on each of the CUB, FLO, SUN and AWA datasets with configurations/settings used to produce the results in the paper. For example, the *scripts/cub* directory contains the following files:
+We provide bash scripts to run experiments on each of the CUB, FLO, SUN and AWA datasets with the configurations/settings used to produce the results in the paper. For example, the *scripts/cub* directory contains the following files:
 1. **run_all.sh**: Runs a complete GZSL experiment, including training the GAN, generating a fake dataset, training a GZSL classifier on the real and/or fake data and evaluating the GZSL classifier on the test data.
-2. **run_train_gan.sh**: This script runs the GAN training only.
+2. **run_train_gan.sh**: Run GAN training only.
 3. **run_gen_fake.sh**: Generates a fake dataset using a trained generator - change the WORKDIR to the correct directory. 
 4. **run_train_cls.sh**: Trains a GZSL on real and/or fake data - change the WORKDIR to the correct directory. 
 5. **run_test_cls.sh**: Evaluate a trained GZSL classifier on the test data - change the WORKDIR to the correct directory.

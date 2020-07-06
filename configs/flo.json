@@ -1,6 +1,6 @@
 {
 	"dataset": "flo",
-	"data_dir": "data/flo",
+	"data_dir": "data/datasets/flo",
 
 	"GAN":{
 		"name": "GAN",

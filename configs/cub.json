@@ -1,6 +1,6 @@
 {
 	"dataset": "cub",
-	"data_dir": "data/cub",
+	"data_dir": "data/datasets/cub",
 
 	"GAN":{
 		"name": "GAN",
