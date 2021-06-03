@@ -1,7 +1,9 @@
 *.pyc
-__pycache__/
-*.h5
-*.pt
-data/datasets/
-experiments/
-*.zip
+*.sw*
+*.egg-info/
+
+.cache
+build/
+dist/
+
+*.so
