@@ -28,7 +28,7 @@ This repository brings the work from a number of sources together. Please see th
 
 ## Installing Cycle-WGAN
 
-We offer three methods fro installing Cycle-WGAN:
+We offer three methods for installing Cycle-WGAN:
 
 1. [Through our Conda package](#conda): single command installs everything including system dependencies (recommended)
 2. [Through our pip package](#pip): single command installs Cycle-WGAN and Python dependences, you take care of system dependencies
