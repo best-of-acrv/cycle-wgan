@@ -23,7 +23,9 @@ SOFTWARE.
 """
 from util.storage import DataH5py, Container
 
+
 class DataH5Loader:
+
     def __init__(self, root, shuffle=True):
         self.root = root
         self.shuffle = shuffle
@@ -60,7 +62,6 @@ class DataH5Loader:
         _ = self.sample()
         if self.shuffle:
             self.__randomize__()
-
 
     def load(self, id):
         obj = load_h5(self.filepath[id])
@@ -131,8 +132,10 @@ def load_imagenet(root, benchmark=False):
     knn.root = '{}/knn.h5'.format(root)
 
     dataset.val = load_h5('{}/val.h5'.format(root)).val
-    dataset.test = Container({'seen': load_h5('{}/test.seen.h5'.format(root)).test,
-                              'unseen': load_h5('{}/test.unseen.h5'.format(root)).test})
+    dataset.test = Container({
+        'seen': load_h5('{}/test.seen.h5'.format(root)).test,
+        'unseen': load_h5('{}/test.unseen.h5'.format(root)).test
+    })
 
     return dataset, knn
 
@@ -143,7 +146,8 @@ def load_h5(root):
 
     return Container(data)
 
-def normalize(x, ord=1,axis=-1):
+
+def normalize(x, ord=1, axis=-1):
     '''
     Normalize is a function that performs unit normalization
     Please, see http://mathworld.wolfram.com/UnitVector.html
@@ -151,7 +155,9 @@ def normalize(x, ord=1,axis=-1):
     :return: normalized x
     '''
     from numpy import atleast_2d, linalg, float
-    return (atleast_2d(x) / atleast_2d(linalg.norm(atleast_2d(x), ord=ord, axis=axis)).T).astype(float)
+    return (atleast_2d(x) / atleast_2d(
+        linalg.norm(atleast_2d(x), ord=ord, axis=axis)).T).astype(float)
+
 
 def join_datasets(dataset, datafake, val_split=0.):
     import numpy as np
@@ -169,7 +175,7 @@ def join_datasets(dataset, datafake, val_split=0.):
                                                           random_state=42)
     os_train = np.ones(XS_train.shape[0])
     ou_train = np.ones(XU_train.shape[0])
-    
+
     os_val = np.ones(XS_val.shape[0])
     ou_val = np.ones(XU_val.shape[0])
 
@@ -177,37 +183,40 @@ def join_datasets(dataset, datafake, val_split=0.):
     dataset.train.Y = np.r_[ys_train, yu_train]
     dataset.train.O = np.r_[os_train, ou_train]
 
-    dataset.train.seen = Container({'X': XS_train,
-                                    'Y': ys_train,
-                                    'O': os_train})
-    dataset.train.unseen = Container({'X': XU_train,
-                                      'Y': yu_train,
-                                      'O': ou_train})
+    dataset.train.seen = Container({
+        'X': XS_train,
+        'Y': ys_train,
+        'O': os_train
+    })
+    dataset.train.unseen = Container({
+        'X': XU_train,
+        'Y': yu_train,
+        'O': ou_train
+    })
 
     dataset.val.X = np.r_[XS_val, XU_val]
     dataset.val.Y = np.r_[ys_val, yu_val]
     dataset.val.O = np.r_[os_val, ou_val]
 
-    dataset.val.seen = Container({'X': XS_val,
-                                  'Y': ys_val,
-                                'O': os_val})
-    dataset.val.unseen = Container({'X': XU_val,
-                                    'Y': yu_val,
-                                    'O': ou_val})
+    dataset.val.seen = Container({'X': XS_val, 'Y': ys_val, 'O': os_val})
+    dataset.val.unseen = Container({'X': XU_val, 'Y': yu_val, 'O': ou_val})
 
     #test
     dataset.test.seen.O = np.ones(dataset.test.seen.Y.shape[0])
     dataset.test.unseen.O = np.zeros(dataset.test.unseen.Y.shape[0])
 
-    dataset.n_classes = np.max([dataset.test.seen.Y.max(), dataset.test.unseen.Y.max()])
+    dataset.n_classes = np.max(
+        [dataset.test.seen.Y.max(),
+         dataset.test.unseen.Y.max()])
 
     return dataset
 
 
 class DatasetDict(object):
+
     def __init__(self):
         self._keys_ = []
-        
+
     def __repr__(self):
         return str(self.getdata())
 
@@ -225,9 +234,9 @@ class DatasetDict(object):
 
     def getitem(self, key):
         return self.__dict__[key]
-            
+
     def merge_array(self, x, y, axis=0):
-        from numpy import size,atleast_1d, concatenate
+        from numpy import size, atleast_1d, concatenate
         if not size(x):
             return atleast_1d(y)
         elif size(x) and size(y):
@@ -250,37 +259,42 @@ class DatasetDict(object):
             self.__dict__[key] = self.merge_array(self.getitem(key), data)
         else:
             self.set(key, data)
-    
+
     def data(self):
         return self.getdata()
-    
+
     def getdata(self):
         return {key: self.__dict__[key] for key in self._keys_}
-    
+
     def __call__(self):
         return self.getdata()
 
+
 def augment_dataset(dataset, aug_file, aug_op):
-    
+
     if aug_file:
         print(":: Augmenting original dataset")
         datafake = load_h5(aug_file)
         #print(datafake.train.X.shape)
         if aug_op == 'merge':
             print(":: Merging augmented dataset to original dataset")
-            dataset.train = Container(merge_dict(dataset.train.as_dict(), datafake.train.as_dict()))
+            dataset.train = Container(
+                merge_dict(dataset.train.as_dict(), datafake.train.as_dict()))
         elif aug_op == 'replace':
             print(":: Replacing original dataset by augmented dataset")
             dataset.train = datafake.train
         else:
             from warnings import warn
-            warn(':: [warning] [default=merge] Augmenting operation not selected!')
-            dataset.train = Container(merge_dict(dataset.train.as_dict(), datafake.train.as_dict()))
+            warn(
+                ':: [warning] [default=merge] Augmenting operation not selected!'
+            )
+            dataset.train = Container(
+                merge_dict(dataset.train.as_dict(), datafake.train.as_dict()))
     return dataset
 
 
 def merge_array(x, y, axis=0):
-    from numpy import size,atleast_1d, concatenate
+    from numpy import size, atleast_1d, concatenate
     if not size(x):
         return atleast_1d(y)
     elif size(x) and size(y):
@@ -289,6 +303,7 @@ def merge_array(x, y, axis=0):
         return atleast_1d(y)
     else:
         return atleast_1d([])
+
 
 def merge_dict(x, y):
     ans = {}

@@ -1,3 +1,4 @@
+import acrv_datasets
 import json
 import os
 import pkg_resources
@@ -50,7 +51,19 @@ class CycleWgan(object):
         pass
 
     def train(self):
-        pass
+        # Load in the dataset
+        dataset, knn = _load_dataset(self.config['dataset'],
+                                     self.config.get('data_dir', None))
+
+
+def _load_dataset(dataset_name, dataset_dir=None, quiet=False):
+    # Print some verbose information
+    if not quiet:
+        print("\nGETTING DATASET:")
+    if dataset_dir is None:
+        dataset_dir = acrv_datasets.get_datasets(dataset_name)
+    if not quiet:
+        print("Using 'data_dir': %s" % dataset_dir)
 
 
 def _sanitise_arg(value, name, supported_list):
