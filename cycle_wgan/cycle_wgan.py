@@ -1,10 +1,13 @@
+import pkg_resources
+
+
 class CycleWgan(object):
     DATASETS = ['awa1', 'cub', 'flo', 'sun']
 
     def __init__(
         self,
         *,
-        config=None,
+        config=pkg_resources.resource_filename('/configs/awa1.json'),
         cpu=False,
         gpu_id=0,
         model_seed=0,
