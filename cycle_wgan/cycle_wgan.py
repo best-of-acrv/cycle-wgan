@@ -5,6 +5,7 @@ import os
 import pkg_resources
 import torch
 
+from .helpers import create_dir
 from .utils.datasets import load
 
 
@@ -61,7 +62,7 @@ class CycleWgan(object):
         # Create a unique working directory for the output
         root = os.path.join(output_directory,
                             datetime.now().strftime(r'%Y%m%d_%H%M%S'))
-        os.makedirs(root)
+        create_dir(root)
 
         # Perform GAN training if requested
         if train_gan:
