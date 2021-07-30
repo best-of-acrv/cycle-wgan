@@ -113,10 +113,10 @@ class CycleWgan(object):
                                        domain, number_features)
 
         # Apply the selected augmentation method in adding fakes to dataset
-        if augmentation_method != CycleWgan.AUGMENTATION_METHODS[0]:
+        if aug_method != CycleWgan.AUGMENTATION_METHODS[0]:
             dataset = augment_dataset(dataset,
                                       _path_fake_file(output_directory),
-                                      augmentation_method)
+                                      aug_method)
 
         # Train GZSL classifier if requested
         if train_gzsl:
