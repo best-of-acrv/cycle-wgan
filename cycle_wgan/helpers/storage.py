@@ -22,15 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 import h5py
+import json
 import numpy as np
+from scipy.io import savemat
 
 
 class Json(object):
+
     def __init__(self):
         pass
 
     @classmethod
-    def save(self, obj, basefile, indent=4):
+    def save(cls, obj, basefile, indent=4):
         '''
         Json().save dict structure as json file
         
@@ -38,9 +41,6 @@ class Json(object):
         :param basefile: file name
         :param indent: default 4
         '''
-
-        from json import dump
-        import numpy as np
         obj_ = obj
 
         for field in obj.keys():
@@ -48,27 +48,28 @@ class Json(object):
                 obj_[field] = obj[field].tolist()
 
         with open(basefile, 'w') as out:
-            dump(obj_, out, sort_keys=True, indent=indent)
+            json.dump(obj_, out, sort_keys=True, indent=indent)
 
     @classmethod
-    def load(self, basefile):
+    def load(cls, basefile):
         '''
         Load json file as a dict
         :param basefile: filename
         :return: dict
         '''
-        from json import load
         with open(basefile, 'r') as out:
-            jload = load(out)
+            jload = json.load(out)
         return jload
 
 
 class DataH5py:
+
     def __init__(self):
-        self.supported_types = (np.ndarray, int, str, bytes,
-                                np.int, np.int8, np.int16, np.int32, np.int64,
-                                np.uint, np.uint8, np.uint16, np.uint32, np.uint64,
-                                np.float, np.float16, np.float32, np.float64, np.float128)
+        self.supported_types = (np.ndarray, int, str, bytes, np.int, np.int8,
+                                np.int16, np.int32, np.int64, np.uint,
+                                np.uint8, np.uint16, np.uint32, np.uint64,
+                                np.float, np.float16, np.float32, np.float64,
+                                np.float128)
         pass
 
     def save(self, dic, filename):
@@ -91,7 +92,7 @@ class DataH5py:
                 if isinstance(item, np.ndarray) and item.size > 1:
                     if isinstance(item[0], np.unicode):
                         h5file.create_dataset('{}{}'.format(path, key),
-                                          data=np.array(item, dtype='S'))
+                                              data=np.array(item, dtype='S'))
                     else:
                         h5file['{}{}'.format(path, key)] = item
                 else:
@@ -105,17 +106,18 @@ class DataH5py:
                 h5file[path + key] = value
 
             elif isinstance(item, dict):
-                self.recursively_save_dict_contents_to_group(h5file,
-                                                             path + key + '/', item)
+                self.recursively_save_dict_contents_to_group(
+                    h5file, path + key + '/', item)
 
             elif isinstance(item, (Container, Bunch)):
-                self.recursively_save_dict_contents_to_group(h5file,
-                                                             path + key + '/', item.as_dict())
+                self.recursively_save_dict_contents_to_group(
+                    h5file, path + key + '/', item.as_dict())
 
             elif item is None:
                 pass
             else:
-                raise ValueError('Cannot save {}:{} type'.format(key, type(item)))
+                raise ValueError('Cannot save {}:{} type'.format(
+                    key, type(item)))
 
     def load_dict_from_hdf5(self, filename):
         """
@@ -131,10 +133,10 @@ class DataH5py:
         ans = {}
         for key, item in h5file[path].items():
             if isinstance(item, h5py._hl.dataset.Dataset):
-                ans[key] = item[()] #item.value
+                ans[key] = item[()]  #item.value
             elif isinstance(item, h5py._hl.group.Group):
-                ans[key] = self.recursively_load_dict_contents_from_group(h5file,
-                                                                          path + key + '/')
+                ans[key] = self.recursively_load_dict_contents_from_group(
+                    h5file, path + key + '/')
         return ans
 
 
@@ -177,19 +179,27 @@ class Bunch(dict):
 
 
 class Container(object):
+
     def __init__(self, data):
         for key, value in data.items():
             if isinstance(value, (list, tuple)):
-               setattr(self, key, [Container(sub) if isinstance(sub, dict) else sub for sub in value])
+                setattr(self, key, [
+                    Container(sub) if isinstance(sub, dict) else sub
+                    for sub in value
+                ])
             else:
-               setattr(self, key, Container(value) if isinstance(value, dict) else value)
+                setattr(self, key,
+                        Container(value) if isinstance(value, dict) else value)
 
     # def as_dict(self):
     #     return self.__dict__
 
     def as_dict(self, dtype=None):
         if dtype:
-            return {dtype(key): dtype(value) for key, value in self.__dict__.items()}
+            return {
+                dtype(key): dtype(value)
+                for key, value in self.__dict__.items()
+            }
         else:
             ans = {}
             for key, value in self.__dict__.items():
@@ -209,9 +219,7 @@ class Container(object):
         return list(self.__dict__.items())
 
 
-
 def hdf2mat(src_, dst_):
-    from scipy.io import savemat
     data = DataH5py().load_dict_from_hdf5(src_)
 
     for key in data.keys():
@@ -219,6 +227,7 @@ def hdf2mat(src_, dst_):
 
 
 class Dict_Average_Meter(object):
+
     def __init__(self):
         pass
 
@@ -235,13 +244,13 @@ class Dict_Average_Meter(object):
             return self.get_subparam(self.__dict__, data)
         else:
             return self.get_subparam(self.__dict__, data)
-    
+
     def get_param(self, data):
         return self.get_subparam(self.__dict__, data)
 
     def get_subparam(self, tree, data):
         levels = data.split('/')
-        if(len(levels) > 1):
+        if (len(levels) > 1):
             if levels[0] in tree:
                 return self.get_subparam(tree[levels[0]], '/'.join(levels[1:]))
             else:
@@ -257,11 +266,11 @@ class Dict_Average_Meter(object):
 
     def set_meter(self, namespace):
         levels = namespace.split('/')
-        last = len(levels)-1
+        last = len(levels) - 1
         tree = self.__dict__
         for key, _level in enumerate(levels):
             if _level in tree:
-                
+
                 if key != last:
                     tree = tree[_level]
                 else:
@@ -272,14 +281,14 @@ class Dict_Average_Meter(object):
                     tree = tree[_level]
                 else:
                     tree[_level] = AverageMeter()
-    
+
     def set_param(self, namespace, data):
         levels = namespace.split('/')
-        last = len(levels)-1
+        last = len(levels) - 1
         tree = self.__dict__
         for key, _level in enumerate(levels):
             if _level in tree:
-                
+
                 if key != last:
                     tree = tree[_level]
                 else:
@@ -290,7 +299,7 @@ class Dict_Average_Meter(object):
                     tree[_level] = {}
                     tree = tree[_level]
                 else:
-                    tree[_level] =data
+                    tree[_level] = data
 
     def update_meters(self, _base, data):
         for key, item in data.items():
@@ -298,6 +307,7 @@ class Dict_Average_Meter(object):
 
 
 class DictContainer(object):
+
     def __init__(self):
         pass
 
@@ -319,7 +329,7 @@ class DictContainer(object):
 
     def get_subparam(self, tree, data):
         levels = data.split('/')
-        if(len(levels) > 1):
+        if (len(levels) > 1):
             if levels[0] in tree:
                 return self.get_subparam(tree[levels[0]], '/'.join(levels[1:]))
             else:
@@ -335,11 +345,11 @@ class DictContainer(object):
 
     def set_param(self, namespace, data):
         levels = namespace.split('/')
-        last = len(levels)-1
+        last = len(levels) - 1
         tree = self.__dict__
         for key, _level in enumerate(levels):
             if _level in tree:
-                
+
                 if key != last:
                     tree = tree[_level]
                 else:
@@ -355,6 +365,7 @@ class DictContainer(object):
 
 class AverageMeter(object):
     """Computes and stores the average and current value"""
+
     def __init__(self):
         self.reset()
 
@@ -375,16 +386,16 @@ class AverageMeter(object):
         return np.array(self.list).var()
 
     def summary(self):
-        return '(min: {:.4g} | mean: {:.4g} | max: {:.4g} | val: {:.4g})'.format(self.min(),
-                                                                                 self.mean(),
-                                                                                 self.max(),
-                                                                                 self.val)
+        return '(min: {:.4g} | mean: {:.4g} | max: {:.4g} | val: {:.4g})'.format(
+            self.min(), self.mean(), self.max(), self.val)
 
     def stats(self):
-        return {'min': self.min(),
-                'mean': self.mean(),
-                'max': self.max(),
-                'val': self.val}
+        return {
+            'min': self.min(),
+            'mean': self.mean(),
+            'max': self.max(),
+            'val': self.val
+        }
 
     def get_last(self):
         return self.list[-1]
@@ -396,7 +407,6 @@ class AverageMeter(object):
         self.count = 0.
         self.list = [0.]
         self.flag = True
-
 
     def value(self):
         return self.val
@@ -431,7 +441,8 @@ class AverageMeter(object):
         except:
             raise 'Error saving {}'.format(fname)
 
+
 if __name__ == '__main__':
-    print('-'*100)
+    print('-' * 100)
     print(':: Testing file: {}'.format(__file__))
-    print('-'*100)
+    print('-' * 100)

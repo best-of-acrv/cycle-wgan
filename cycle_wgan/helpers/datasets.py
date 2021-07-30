@@ -21,7 +21,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from util.storage import DataH5py, Container
+import numpy as np
+from sklearn.cross_validation import train_test_split
+
+from .storage import DataH5py, Container
 
 
 class DataH5Loader:
@@ -32,7 +35,6 @@ class DataH5Loader:
         self.setup()
 
     def add_root(self, root):
-        import numpy as np
         self.filepath = np.r_[self.filepath, [root]]
         self.filename = np.r_[self.filename, [root.split('/')[-1]]]
         self.nfiles = len(self.filepath)
@@ -40,7 +42,6 @@ class DataH5Loader:
             self.__randomize__()
 
     def add_path(self, root):
-        import numpy as np
         self.filepath = np.r_[self.filepath, [root]]
         self.filename = np.r_[self.filename, [root.split('/')[-1]]]
         self.nfiles = len(self.filepath)
@@ -48,20 +49,21 @@ class DataH5Loader:
             self.__randomize__()
 
     def __randomize__(self):
-        from numpy import arange, random
-        rids = arange(0, self.nfiles)
-        random.shuffle(rids)
+        rids = np.arange(0, self.nfiles)
+        np.random.shuffle(rids)
         self.filepath = self.filepath[rids]
         self.filename = self.filename[rids]
 
     def setup(self):
-        from util.files import list_files
-        self.filepath = list_files(self.root, True, 'h5')
-        self.filename = list_files(self.root, False, 'h5')
-        self.nfiles = len(self.filepath)
-        _ = self.sample()
-        if self.shuffle:
-            self.__randomize__()
+        # TODO no idea what this implementation was meant to be importing...
+        # from util.files import list_files
+        # self.filepath = list_files(self.root, True, 'h5')
+        # self.filename = list_files(self.root, False, 'h5')
+        # self.nfiles = len(self.filepath)
+        # _ = self.sample()
+        # if self.shuffle:
+        #     self.__randomize__()
+        raise NotImplementedError()
 
     def load(self, id):
         obj = load_h5(self.filepath[id])
@@ -69,8 +71,7 @@ class DataH5Loader:
         return obj
 
     def sample(self):
-        from numpy import random
-        _data = self.load(random.randint(0, self.nfiles))
+        _data = self.load(np.random.randint(0, self.nfiles))
         self.x_shape = _data.train.X.shape
         return _data
 
@@ -93,10 +94,11 @@ def load(root, dtype='h5py'):
     :param dtype: default:h5py
     :return: dataset, knn 
     """
-
-    if dtype == 'h5py':
-        dataset = DataH5py().load_dict_from_hdf5('{}/data.h5'.format(root))
-        knn = DataH5py().load_dict_from_hdf5('{}/knn.h5'.format(root))
+    if dtype != 'h5py':
+        raise NotImplementedError("Dataset with dtype '%s' isn't supported." %
+                                  dtype)
+    dataset = DataH5py().load_dict_from_hdf5('{}/data.h5'.format(root))
+    knn = DataH5py().load_dict_from_hdf5('{}/knn.h5'.format(root))
 
     dataset, knn = Container(dataset), Container(knn)
     if 'n_classes' not in dataset.__dict__:
@@ -115,8 +117,6 @@ def load_imagenet(root, benchmark=False):
     :param dtype: default:h5py
     :return: dataset, knn
     """
-
-    from util.storage import DataH5py, Container
     dataset = DataH5Loader('{}/datapoints/'.format(root))
     knn = load_h5('{}/knn.h5'.format(root))
 
@@ -141,9 +141,7 @@ def load_imagenet(root, benchmark=False):
 
 
 def load_h5(root):
-    from util.storage import DataH5py, Container
     data = DataH5py().load_dict_from_hdf5(root)
-
     return Container(data)
 
 
@@ -154,17 +152,12 @@ def normalize(x, ord=1, axis=-1):
     :param x: Vector
     :return: normalized x
     '''
-    from numpy import atleast_2d, linalg, float
-    return (atleast_2d(x) / atleast_2d(
-        linalg.norm(atleast_2d(x), ord=ord, axis=axis)).T).astype(float)
+    return (np.atleast_2d(x) / np.atleast_2d(
+        np.linalg.norm(np.atleast_2d(x), ord=ord, axis=axis)).T).astype(
+            np.float)
 
 
 def join_datasets(dataset, datafake, val_split=0.):
-    import numpy as np
-    from util.storage import Container
-    from sklearn.cross_validation import train_test_split
-    import copy
-
     XS_train, XS_val, ys_train, ys_val = train_test_split(dataset.train.X,
                                                           dataset.train.Y,
                                                           test_size=val_split,
@@ -236,22 +229,20 @@ class DatasetDict(object):
         return self.__dict__[key]
 
     def merge_array(self, x, y, axis=0):
-        from numpy import size, atleast_1d, concatenate
-        if not size(x):
-            return atleast_1d(y)
-        elif size(x) and size(y):
-            return concatenate([x, atleast_1d(y)], axis)
-        elif size(y):
-            return atleast_1d(y)
+        if not np.size(x):
+            return np.atleast_1d(y)
+        elif np.size(x) and np.size(y):
+            return np.concatenate([x, np.atleast_1d(y)], axis)
+        elif np.size(y):
+            return np.atleast_1d(y)
         else:
-            return atleast_1d([])
+            return np.atleast_1d([])
 
     def set(self, key, data=False):
-        from numpy import array
         if not isinstance(data, bool):
             self.__dict__[key] = data
         else:
-            self.__dict__[key] = array([])
+            self.__dict__[key] = np.array([])
         self._keys_.append(key)
 
     def append(self, key, data):
