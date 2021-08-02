@@ -66,7 +66,21 @@ class CycleWgan(object):
                 self.config['GZSL_classifier'])
 
     def evaluate(self, *, output_directory='./eval_output'):
-        pass
+        # Load in the dataset
+        dataset, knn = _load_dataset(self.config['dataset'],
+                                     self.config.get('data_dir', None))
+
+        # Ensure we have a classifier to evaluate
+        if self.classifier is None:
+            raise ValueError(
+                "No classifier loader. Please either train a new classifier "
+                "using the 'train()' method, or load an existing one using "
+                "the 'load_from_directory' constructor parameter.")
+
+        # Perform evaluation
+        return helpers.test_gzsl_classifier(self.classifier,
+                                            self.config['GZSL_classifier'],
+                                            dataset.test, knn)
 
     def predict(self, *, image=None, image_file=None, output_file=None):
         pass
