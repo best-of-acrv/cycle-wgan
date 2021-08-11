@@ -21,6 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+import glob
 import numpy as np
 from sklearn.model_selection import train_test_split
 
@@ -94,11 +95,20 @@ def load(root, dtype='h5py'):
     :param dtype: default:h5py
     :return: dataset, knn 
     """
+    print(glob.glob('%s/**/data.h5' % root, recursive=True))
     if dtype != 'h5py':
         raise NotImplementedError("Dataset with dtype '%s' isn't supported." %
                                   dtype)
-    dataset = DataH5py().load_dict_from_hdf5('{}/data.h5'.format(root))
-    knn = DataH5py().load_dict_from_hdf5('{}/knn.h5'.format(root))
+
+    dataset_files = glob.glob('%s/**/data.h5' % root, recursive=True)
+    if not dataset_files:
+        raise ValueError("No 'data.h5' file was found in:\n\t%s" % root)
+    knn_files = glob.glob('%s/**/knn.h5' % root, recursive=True)
+    if not knn_files:
+        raise ValueError("No 'knn.h5' file was found in:\n\t%s" % root)
+
+    dataset = DataH5py().load_dict_from_hdf5(dataset_files[0])
+    knn = DataH5py().load_dict_from_hdf5(knn_files[0])
 
     dataset, knn = Container(dataset), Container(knn)
     if 'n_classes' not in dataset.__dict__:
