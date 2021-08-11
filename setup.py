@@ -15,8 +15,8 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     packages=find_packages(),
-    package_data={'cycle_wgan': ['*.json']},
-    install_requires=['acrv_datasets'],
+    package_data={'cycle_wgan': ['configs/*.json']},
+    install_requires=['acrv_datasets', 'h5py', 'scikit-learn', 'torch'],
     entry_points={'console_scripts': ['cycle-wgan=cycle_wgan.__main__:main']},
     classifiers=(
         "Development Status :: 4 - Beta",
