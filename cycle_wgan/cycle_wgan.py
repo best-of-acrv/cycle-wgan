@@ -13,7 +13,10 @@ from .utils.datasets import augment_dataset, load
 
 class CycleWgan(object):
     AUGMENTATION_METHODS = ['none', 'replace', 'merge']
-    DATASETS = ['awa1', 'cub', 'flo', 'sun']
+    DATASETS = [
+        'classification_h5s/awa1', 'classification_h5s/cub',
+        'classification_h5s/flo', 'classification_h5s/sun'
+    ]
     DOMAINS = ['unseen', 'seen', 'unseen seen']
 
     def __init__(self,
@@ -145,6 +148,9 @@ def _load_dataset(dataset_name, dataset_dir=None, quiet=False):
         print("\nGETTING DATASET:")
     if dataset_dir is None:
         dataset_dir = acrv_datasets.get_datasets(dataset_name)
+        if not dataset_dir:
+            raise ValueError("Failed to get dataset '%s' using acrv_datasets" %
+                             dataset_name)
     if not quiet:
         print("Using 'data_dir': %s" % dataset_dir)
 

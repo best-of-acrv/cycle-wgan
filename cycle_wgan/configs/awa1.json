@@ -1,6 +1,5 @@
 {
-  "dataset": "awa1",
-  "data_dir": "data/datasets/awa1",
+  "dataset": "classification_h5s/awa1",
 
   "GAN": {
     "name": "GAN",
@@ -65,4 +64,3 @@
     "save_freq": 5
   }
 }
-
