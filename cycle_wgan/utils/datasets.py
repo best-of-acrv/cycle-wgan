@@ -120,7 +120,7 @@ def load_imagenet(root, benchmark=False):
     dataset = DataH5Loader('{}/datapoints/'.format(root))
     knn = load_h5('{}/knn.h5'.format(root))
 
-    if benchmark is 'zsl':
+    if benchmark == 'zsl':
         dataset.n_classes = knn.zsl.ids.shape[0]
     elif benchmark:
         dataset.n_classes = knn.openset.ids.shape[0]
