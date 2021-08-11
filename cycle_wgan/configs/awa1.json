@@ -1,67 +1,68 @@
 {
-	"dataset": "awa",
-	"data_dir": "data/datasets/awa1",
+  "dataset": "awa1",
+  "data_dir": "data/datasets/awa1",
 
-	"GAN":{
-		"name": "GAN",
-		"epochs": 285,
-		"batch_size": 64,
-		"val_freq": 20,
-		"save_freq": 5,
-		"cycle_lambda": 0.01,
-		"gp_lambda": 10,
+  "GAN": {
+    "name": "GAN",
+    "epochs": 285,
+    "batch_size": 64,
+    "val_freq": 20,
+    "save_freq": 5,
+    "cycle_lambda": 0.01,
+    "gp_lambda": 10,
 
-		"generator":{
-			"name": "generator",
-			"x_dim": 2048,
-			"a_dim": 85,
-			"z_dim": 85,
-			"hidden_dim": 4096,
-			"lr": 1e-4
-		},
+    "generator": {
+      "name": "generator",
+      "x_dim": 2048,
+      "a_dim": 85,
+      "z_dim": 85,
+      "hidden_dim": 4096,
+      "lr": 1e-4
+    },
 
-		"discriminator":{
-			"name": "discriminator",
-			"x_dim": 2048,
-			"a_dim": 85,
-			"hidden_dim": 4096,
-			"lr": 1e-3
-		},
+    "discriminator": {
+      "name": "discriminator",
+      "x_dim": 2048,
+      "a_dim": 85,
+      "hidden_dim": 4096,
+      "lr": 1e-3
+    },
 
-		"regressor":{
-			"name": "regressor",
-			"x_dim": 2048,
-			"a_dim": 85,
-			"epochs": 40,
-			"batch_size": 64,
-			"lr": 9.9945e-5,
-			"lr_decay": 2.645e-4,
-			"val_freq": 5,
-			"save_freq": 5
-		},
+    "regressor": {
+      "name": "regressor",
+      "x_dim": 2048,
+      "a_dim": 85,
+      "epochs": 40,
+      "batch_size": 64,
+      "lr": 9.9945e-5,
+      "lr_decay": 2.645e-4,
+      "val_freq": 5,
+      "save_freq": 5
+    },
 
-		"classifier":{
-			"name": "GAN validation classifier",
-			"x_dim": 2048,
-			"y_dim": 50,
-			"epochs": 30,
-			"batch_size": 2048,
-			"lr": 0.05,
-			"val_freq": 5,
-			"save_freq": 5
-		}
-	},
+    "classifier": {
+      "name": "GAN validation classifier",
+      "x_dim": 2048,
+      "y_dim": 50,
+      "epochs": 30,
+      "batch_size": 2048,
+      "lr": 0.05,
+      "val_freq": 5,
+      "save_freq": 5
+    }
+  },
 
-	"GZSL_classifier":{
-		"name": "GZSL classifier",
-		"x_dim": 2048,
-		"y_dim": 50,
-		"epochs": 37,
-		"batch_size": 9128,
-		"lr": 9.9800e-5,
-		"lr_decay": 2.84e-3,
-		"wdecay": 0.0001,
-		"val_freq": 5,
-		"save_freq": 5
-	}
+  "GZSL_classifier": {
+    "name": "GZSL classifier",
+    "x_dim": 2048,
+    "y_dim": 50,
+    "epochs": 37,
+    "batch_size": 9128,
+    "lr": 9.98e-5,
+    "lr_decay": 2.84e-3,
+    "wdecay": 0.0001,
+    "val_freq": 5,
+    "save_freq": 5
+  }
 }
+
