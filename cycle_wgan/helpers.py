@@ -26,6 +26,7 @@ def get_data_as_dict(x=None, y=None, a=None):
 def get_split_datasets(dataset, val_size=0.1):
 
     #Split data into training/validation (1-val_size/val_size)
+    print("Test size: %f" % val_size)
     split = train_test_split(dataset.X,
                              dataset.Y,
                              dataset.A.continuous,
@@ -84,8 +85,8 @@ def train_gzsl_classifier(device, classifier_dir, opts, dataset):
 def test_gzsl_classifier(gzsl_classifier, opts, dataset, knn):
 
     #Get seen/unseen test data
-    test_dataset_seen = get_split_datasets(dataset.seen, val_size=0)[0]
-    test_dataset_unseen = get_split_datasets(dataset.unseen, val_size=0)[0]
+    test_dataset_seen = get_split_datasets(dataset.seen)[0]
+    test_dataset_unseen = get_split_datasets(dataset.unseen)[0]
 
     #Per-class accuracies
     batch_size = opts['batch_size'] if 'batch_size' in opts else 64

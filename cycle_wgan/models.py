@@ -336,8 +336,8 @@ class Classifier(BaseModel):
 
         loss_running = 0.0
 
-        correct = torch.zeros(self._num_classes)
-        total = torch.zeros(self._num_classes)
+        correct = torch.zeros(self._num_classes).to(self.device)
+        total = torch.zeros(self._num_classes).to(self.device)
 
         loader = DataLoader(dataset,
                             batch_size=batch_size,
