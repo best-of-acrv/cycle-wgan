@@ -95,7 +95,8 @@ def test_gzsl_classifier(gzsl_classifier, opts, dataset, knn):
     unseen_acc = gzsl_classifier.class_accuracy(test_dataset_unseen,
                                                 batch_size, knn.zsl.ids - 1)
 
-    print("Y(U) = {0:.4f}, Y(S) = {1:.4f}, H = {2:.4f}, ".format(
-        unseen_acc, seen_acc, harmonic_mean(seen_acc, unseen_acc)))
+    print(
+        "Y(unseen) = {0:.4f}, Y(seen) = {1:.4f}, Harm mean = {2:.4f}, ".format(
+            unseen_acc, seen_acc, harmonic_mean(seen_acc, unseen_acc)))
 
-    return unseen_acc, seen_acc
+    return unseen_acc.item(), seen_acc.item()
