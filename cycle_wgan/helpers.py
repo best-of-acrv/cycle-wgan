@@ -12,10 +12,11 @@ def create_dir(directory):
 
 def generate_fake_data(gan, knn, aug_file, domain, num_features):
     #Set-up directory
-    create_dir(str(Path(aug_file).parent))
+    create_dir(os.path.dirname(aug_file))
 
     #Used trained generator to synthesis fake visual samples - save to aug_file
-    gan.generator.generate_dataset(aug_file, knn, domain, num_features)
+    gan.generator.generate_dataset(aug_file, knn, domain.split(' '),
+                                   num_features)
 
 
 def get_data_as_dict(x=None, y=None, a=None):

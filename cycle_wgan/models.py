@@ -633,6 +633,7 @@ class Generator(BaseModel):
         }
 
         for _domain, _num in zip(domain, num_features):
+            print("DOMAIN IS: %s" % domain)
             domain_in = {
                 'unseen': zip(knn.zsl.data, knn.zsl.ids),
                 'seen': zip(knn.openval.data, knn.openval.ids),
