@@ -48,6 +48,7 @@ class CycleWgan(object):
             os.environ['CUDA_VISIBLE_DEVICES'] = str(self.gpu_id)
             torch.manual_seed(self.model_seed)
             torch.cuda.manual_seed(self.model_seed)
+            self.device = torch.device('cuda')
         elif not torch.cuda.is_available():
             warnings.warn('PyTorch could not find CUDA, using CPU ...')
             self.device = torch.device('cpu')
@@ -76,7 +77,7 @@ class CycleWgan(object):
         # Ensure we have a classifier to evaluate
         if self.classifier is None:
             raise ValueError(
-                "No classifier loader. Please either train a new classifier "
+                "No classifier loaded. Please either train a new classifier "
                 "using the 'train()' method, or load an existing one using "
                 "the 'load_from_directory' constructor parameter.")
 

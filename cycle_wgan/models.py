@@ -356,17 +356,18 @@ class Classifier(BaseModel):
                     correct[y[j]] += pred[j] == y[j]
                     total[y[j]] += 1
 
-        return (correct[class_ids] /
-                (total[class_ids]).type(torch.FloatTensor)).mean()
+        return (
+            correct[class_ids] /
+            (total[class_ids]).type(torch.FloatTensor).to(self.device)).mean()
 
     def _class_accuracy_accum(self, scores, target, correct=None, total=None):
         #Accumulate per-class accuracy for a batch - called from GAN.validate()
 
         if correct is None:
-            correct = torch.zeros(self._num_classes)
-            total = torch.zeros(self._num_classes)
+            correct = torch.zeros(self._num_classes).to(self.device)
+            total = torch.zeros(self._num_classes).to(self.device)
 
-        pred = scores.argmax(dim=1).cpu()
+        pred = scores.argmax(dim=1)
 
         for j in range(target.size(0)):
             correct[target[j]] += pred[j] == target[j]
@@ -1017,8 +1018,8 @@ class GAN(BaseModel):
 
         return [
             "Accuracy (fake, seen)",
-            (correct[total > 0] /
-             (total[total > 0]).type(torch.FloatTensor)).mean()
+            (correct[total > 0] / (total[total > 0]).type(
+                torch.FloatTensor).to(self.device)).mean()
         ]
 
     def _save_checkpoint(self, epoch, losses):

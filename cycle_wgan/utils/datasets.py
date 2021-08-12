@@ -95,7 +95,6 @@ def load(root, dtype='h5py'):
     :param dtype: default:h5py
     :return: dataset, knn 
     """
-    print(glob.glob('%s/**/data.h5' % root, recursive=True))
     if dtype != 'h5py':
         raise NotImplementedError("Dataset with dtype '%s' isn't supported." %
                                   dtype)
