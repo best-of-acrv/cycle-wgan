@@ -18,24 +18,41 @@ class CycleWgan(object):
         'classification_h5s/flo', 'classification_h5s/sun'
     ]
     DOMAINS = ['unseen', 'seen', 'unseen seen']
+    PRETRAINED = ['awa1', 'cuv', 'flow', 'sun']
 
     def __init__(self,
                  *,
-                 config=pkg_resources.resource_filename(
-                     __name__, '/configs/awa1.json'),
+                 config_file=None,
                  cpu=False,
                  gpu_id=0,
+                 load_pretrained='awa1',
                  load_from_directory=None,
                  model_seed=0):
         # Apply sanitised arguments
-        self.config = config
         self.cpu = cpu
         self.gpu_id = gpu_id
         self.model_seed = model_seed
-        self.load_from_directory = load_from_directory
 
-        # Attempt to load the specified config file
-        with open(self.config, 'r') as f:
+        # Handle each of the loading options
+        self.load_source = None
+        if load_from_directory is not None:
+            print("\nLOADING MODEL FROM '%s':" % load_from_directory)
+            self.load_source = load_from_directory
+        elif load_pretrained is not None:
+            _sanitise_arg(load_pretrained, 'load_pretrained',
+                          CycleWgan.PRETRAINED)
+            print("\nLOADING PRETRAINED MODEL '%s':" % load_pretrained)
+            self.load_source = helpers.download_pretrained(load_pretrained)
+
+        # Attempt to load the correct config file
+        if config_file is None and self.load_source is None:
+            raise ValueError(
+                "A valid config file must be provided either explicitly with "
+                "the 'config_file' argument, or implicitly with a "
+                "'load_pretrained' or 'load_from_directory' value")
+        if config_file is None:
+            config_file = _config_file(self.load_source)
+        with open(config_file, 'r') as f:
             self.config = json.load(f)
 
         # Check config for any glaring errors
@@ -59,17 +76,15 @@ class CycleWgan(object):
         # Load the models if a directory is provided
         self.gan = None
         self.classifier = None
-        if self.load_from_directory is not None:
-            print("\nLOADING MODEL FROM %s:" % self.load_from_directory)
+        if self.load_source is not None:
             self.gan = helpers.setup_model(models.GAN, self.device,
-                                           _path_gan(self.load_from_directory),
+                                           _path_gan(self.load_source),
                                            self.config['GAN'])
             self.classifier = helpers.setup_model(
-                models.Classifier, self.device,
-                _path_gzsl(self.load_from_directory),
+                models.Classifier, self.device, _path_gzsl(self.load_source),
                 self.config['GZSL_classifier'])
 
-    def evaluate(self, *, output_directory='./eval_output'):
+    def evaluate(self):
         # Load in the dataset
         dataset, knn = _load_dataset(self.config['dataset'],
                                      self.config.get('data_dir', None))
@@ -119,7 +134,7 @@ class CycleWgan(object):
             helpers.create_dir(output_directory)
 
         # Dump the config before we get into training
-        with open(os.path.join(output_directory, 'config.json'), 'w') as f:
+        with open(_config_file(output_directory), 'w') as f:
             json.dump(self.config, f, indent='  ')
 
         # Train GAN if requested
@@ -145,6 +160,10 @@ class CycleWgan(object):
             self.classifier = helpers.train_gzsl_classifier(
                 self.device, _path_gzsl(output_directory),
                 self.config['GZSL_classifier'], dataset.train)
+
+
+def _config_file(root):
+    return os.path.join(root, 'config.json')
 
 
 def _load_dataset(dataset_name, dataset_dir=None, quiet=False):

@@ -1,13 +1,28 @@
 import os
+import pkg_resources
 from sklearn.model_selection import train_test_split
 
 from . import models
 from .utils import loaders
 
+_CONFIGS_LOCATION = 'configs'
+
+
+def download_pretrained(pretrained_name):
+    return ''
+
 
 def create_dir(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
+
+
+def config_by_name(name, must_exist=True):
+    fn = pkg_resources.resource_filename(
+        __name__, os.path.join(_CONFIGS_LOCATION, '%s.json' % name))
+    if must_exist and not os.path.exists(fn):
+        raise ValueError('No config exists with the filepath:\n\t%s' % fn)
+    return fn
 
 
 def generate_fake_data(gan, knn, aug_file, domain, num_features):

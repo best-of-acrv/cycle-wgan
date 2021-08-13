@@ -349,6 +349,8 @@ class Classifier(BaseModel):
 
                 pred = self.forward(data[self._inputs].to(
                     self.device)).argmax(dim=1).cpu()
+                # import pudb
+                # pudb.set_trace()
 
                 y = data[self._targets]
 
