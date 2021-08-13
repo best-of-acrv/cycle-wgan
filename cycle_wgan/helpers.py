@@ -1,20 +1,46 @@
 import os
 import pkg_resources
 from sklearn.model_selection import train_test_split
+from six.moves import urllib
+import shutil
 
 from . import models
 from .utils import loaders
 
+_CACHE_LOCATION = '.cache'
 _CONFIGS_LOCATION = 'configs'
 
+_PRETRAINED_URLS = {
+    'awa1': 'h',
+    'cub': 'h',
+    'flo': 'h',
+    'sun': 'h',
+}
 
-def download_pretrained(pretrained_name):
-    return ''
+
+def cache_location():
+    return pkg_resources.resource_filename(__name__, _CACHE_LOCATION)
 
 
 def create_dir(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
+
+
+def download_pretrained(pretrained_name):
+    cl = cache_location()
+    print("Downloading pretrained model to package cache:\n\t%s" % cl)
+    if not os.path.exists(cl):
+        os.makedirs(cl)
+    cached_fn = os.path.join(cl, '%s' % pretrained_name)
+    if not os.path.exists(cached_fn):
+        cached_dest = '%s.tgz' % cached_fn
+        print("Downloading to %s\n" % cached_dest)
+        urllib.request.urlretrieve(_PRETRAINED_URLS[pretrained_name],
+                                   cached_dest)
+        os.makedirs(cached_fn)
+        shutil.unpack_archive(cached_dest, cached_fn, format='gztar')
+    return cached_fn
 
 
 def config_by_name(name, must_exist=True):
