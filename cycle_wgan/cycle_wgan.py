@@ -118,6 +118,10 @@ class CycleWgan(object):
                 datetime.now().strftime(r'%Y%m%d_%H%M%S'))
             helpers.create_dir(output_directory)
 
+        # Dump the config before we get into training
+        with open(os.path.join(output_directory, 'config.json'), 'w') as f:
+            json.dump(self.config, f, indent='  ')
+
         # Train GAN if requested
         if train_gan:
             self.gan = helpers.train_gan(self.device,
