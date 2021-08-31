@@ -16,6 +16,8 @@ TODO: image of the system's output
 
 This repository contains an open source implementation of Cycle-WGAN in Python, with training configuration for four common datasets: CUB, FLO, SUN, and AWA1. The package provides PyTorch implementations for training, evaluation, and prediction in your own systems. The package is easily installable with `conda`, and can also be installed via `pip` if you prefer manually managing system dependencies.
 
+Note the [AWA1 dataset](https://cvml.ist.ac.at/AwA/) has been [superseded by the drop-in replacement AWA2](https://cvml.ist.ac.at/AwA2/), which should be used instead for all new research. We need updated H5 data files to use AWA2 with Cycle-WGAN (see [original repository for more details](https://github.com/rfelixmg/frwgan-eccv18#datasets)).
+
 Our code is free to use, and licensed under BSD-3. We simply ask that you [cite our work](#citing-our-work) if you use Cycle-WGAN in your own research.
 
 ## Related resources
