@@ -23,7 +23,7 @@ Our code is free to use, and licensed under BSD-3. We simply ask that you [cite 
 This repository brings the work from a number of sources together. Please see the links below for further details:
 
 - our original paper: ["Multi-modal Cycle-consistent Generalized Zero-Shot Learning"](#citing-our-work)
-- original TensorFlow implementation: [https://github.com/rfelixmg/frwgan-eccv18](https://github.com/rfelixmg/frwgan-eccv1o8)
+- original TensorFlow implementation: [https://github.com/rfelixmg/frwgan-eccv18](https://github.com/rfelixmg/frwgan-eccv18)
 - utility code incorporated into this repository: [https://github.com/rfelixmg/util](https://github.com/rfelixmg/util)
 
 ## Installing Cycle-WGAN
