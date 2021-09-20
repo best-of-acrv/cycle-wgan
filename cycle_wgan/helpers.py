@@ -11,10 +11,10 @@ _CACHE_LOCATION = '.cache'
 _CONFIGS_LOCATION = 'configs'
 
 _PRETRAINED_URLS = {
-    'awa1': 'h',
-    'cub': 'h',
-    'flo': 'h',
-    'sun': 'h',
+    'awa1': 'https://cloudstor.aarnet.edu.au/plus/s/2eTH1uXaYlsAqT7/download',
+    'cub': 'https://cloudstor.aarnet.edu.au/plus/s/tufEmxTm4fvFkn3/download',
+    'flo': 'https://cloudstor.aarnet.edu.au/plus/s/2gcuAkZRbUdq8Lf/download',
+    'sun': 'https://cloudstor.aarnet.edu.au/plus/s/jXpqVxJRkrrNZAZ/download',
 }
 
 
