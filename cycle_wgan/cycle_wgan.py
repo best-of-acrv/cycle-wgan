@@ -18,7 +18,7 @@ class CycleWgan(object):
         'classification_h5s/flo', 'classification_h5s/sun'
     ]
     DOMAINS = ['unseen', 'seen', 'unseen seen']
-    PRETRAINED = ['awa1', 'cuv', 'flow', 'sun']
+    PRETRAINED = ['awa1', 'cuv', 'flo', 'sun']
 
     def __init__(self,
                  *,
